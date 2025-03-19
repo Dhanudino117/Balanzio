@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { FaHome, FaMoneyBill, FaChartLine, FaCog } from "react-icons/fa";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const menuItems = [
   { id: 1, name: "Home", icon: <FaHome />, path: "/" },
@@ -12,16 +12,15 @@ const menuItems = [
 ];
 
 const Header = () => {
-  const [activeItem, setActiveItem] = useState("Home");
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
   };
 
-  const handleItemClick = (itemName, path) => {
-    setActiveItem(itemName);
+  const handleItemClick = (path) => {
     setIsOpen(false);
     navigate(path);
   };
@@ -49,11 +48,11 @@ const Header = () => {
             <li
               key={item.id}
               className={`flex items-center gap-4 p-3 mb-3 rounded-lg cursor-pointer transition-all duration-300 ${
-                activeItem === item.name
+                location.pathname === item.path
                   ? "bg-blue-500 text-white"
                   : "hover:bg-gray-100"
               }`}
-              onClick={() => handleItemClick(item.name, item.path)}
+              onClick={() => handleItemClick(item.path)}
             >
               {item.icon}
               <span>{item.name}</span>
