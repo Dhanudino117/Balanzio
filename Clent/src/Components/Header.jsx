@@ -10,7 +10,7 @@ const menuItems = [
   { id: 3, name: "Budget", icon: <FaMoneyBill />, path: "/user-budget" },
   { id: 4, name: "Expenditure", icon: <FaChartLine />, path: "/user-expenditure" },
   { id: 5, name: "Settings", icon: <FaCog />, path: "/user-settings" },
-  {id:6, name:"Login", icon: <PiSignInBold /> , path: '/auth-page' }  
+  {id:6, name:"Logout", icon: <PiSignInBold /> , path: '/auth-page' }  
 ];
 
 const Header = () => {

@@ -18,7 +18,6 @@ function BudgetManagement() {
 
   if (!account) return <div>Loading...</div>;
 
-  // Calculate total spent (sum of all debit transactions)
   const totalSpent = account.transactions
     .filter((tx) => tx.type === "debit")
     .reduce((sum, tx) => sum + tx.amount, 0);
@@ -33,7 +32,7 @@ function BudgetManagement() {
           <h1 className="text-2xl font-semibold">Budget Management</h1>
         </header>
 
-        {/* Budget Overview */}
+        
         <div className="mb-6 bg-white p-4 rounded-lg shadow-md">
           <div className="flex justify-between mb-2">
             <span className="text-lg font-semibold">Monthly Budget</span>
@@ -50,7 +49,7 @@ function BudgetManagement() {
           </span>
         </div>
 
-        {/* Expense List */}
+        
         <div className="bg-white p-4 rounded-lg shadow-md">
           <h2 className="text-xl font-semibold mb-4">Expenses</h2>
           {account.transactions.filter(tx => tx.type === "debit").length > 0 ? (
@@ -67,7 +66,7 @@ function BudgetManagement() {
                       {new Date(tx.date).toLocaleDateString()}
                     </p>
                   </div>
-                  <p className="text-lg font-semibold text-red-500">-₹{tx.amount}</p>
+                  <p className="text-lg font-semibold text-red-500"> -₹{tx.amount}</p>
                 </div>
               ))
           ) : (

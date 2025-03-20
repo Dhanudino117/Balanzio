@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { IoSearch } from "react-icons/io5";
 import { BiTransfer } from "react-icons/bi";
-import { FaRegCreditCard } from "react-icons/fa";
+import { FaRegCreditCard, FaUniversity } from "react-icons/fa";
 import Header from "../Components/Header";
 import { getAccounts } from "../api";
 
@@ -12,7 +12,6 @@ const TransactionsPage = () => {
   const [transactions, setTransactions] = useState([]);
 
   useEffect(() => {
-    // Fetch accounts and use the transactions from the first account
     getAccounts()
       .then((accounts) => {
         if (accounts.length) {
@@ -80,7 +79,7 @@ const TransactionsPage = () => {
               <div className="flex items-center gap-4">
                 <div className="bg-gray-100 p-4 rounded-full">
                   {t.mode === "Bank Transfer" ? (
-                    <BiTransfer className="text-green-500" />
+                    <FaUniversity className="text-green-500" />
                   ) : (
                     <FaRegCreditCard className="text-blue-500" />
                   )}

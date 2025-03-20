@@ -171,7 +171,6 @@
 
 // export default Dashboard;
 
-// src/pages/Dashboard.jsx
 import React, { useEffect, useState } from "react";
 import { FaCreditCard, FaUniversity } from "react-icons/fa";
 import {
@@ -185,6 +184,7 @@ import {
 } from "recharts";
 import Header from "../Components/Header";
 import { getAccounts } from "../api";
+import { IoWalletOutline } from "react-icons/io5";
 
 const Dashboard = () => {
   const [account, setAccount] = useState(null);
@@ -217,7 +217,7 @@ const Dashboard = () => {
     );
   };
 
-  // Dummy graphData; adjust this logic based on your actual transaction data
+  // Dummy graphData 
   const graphData = [
     { date: "Mar 3", expenditure: 150 },
     { date: "Mar 4", expenditure: 300 },
@@ -236,7 +236,7 @@ const Dashboard = () => {
           Dashboard
         </h1>
 
-        {/* Current Balance Section */}
+        
         <div className="bg-white p-6 rounded-xl shadow-md mb-6 border border-gray-200">
           <h2 className="text-gray-600">Current Balance</h2>
           <p className="text-4xl font-bold text-green-600">
@@ -298,9 +298,9 @@ const Dashboard = () => {
               <div className="flex items-center gap-4">
                 <div className="bg-gray-100 p-3 rounded-full">
                   {tx.mode === "Bank Transfer" ? (
-                    <FaUniversity className="text-red-600" />
+                    <FaUniversity className="text-green-600" />
                   ) : (
-                    <FaCreditCard className="text-blue-600" />
+                    <IoWalletOutline className="text-blue-600" />
                   )}
                 </div>
                 <div>
