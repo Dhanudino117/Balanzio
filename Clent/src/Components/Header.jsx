@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { FaHome, FaMoneyBill, FaChartLine, FaCog } from "react-icons/fa";
 import { useNavigate, useLocation } from "react-router-dom";
+import { PiSignInBold } from "react-icons/pi";
 
 const menuItems = [
   { id: 1, name: "Home", icon: <FaHome />, path: "/" },
@@ -9,6 +10,7 @@ const menuItems = [
   { id: 3, name: "Budget", icon: <FaMoneyBill />, path: "/user-budget" },
   { id: 4, name: "Expenditure", icon: <FaChartLine />, path: "/user-expenditure" },
   { id: 5, name: "Settings", icon: <FaCog />, path: "/user-settings" },
+  {id:6, name:"Login", icon: <PiSignInBold /> , path: '/auth-page' }  
 ];
 
 const Header = () => {

@@ -1,8 +1,7 @@
 // src/pages/BudgetManagement.jsx
 import React, { useEffect, useState } from "react";
-import { FaPlus } from "react-icons/fa";
 import Header from "../Components/Header";
-import { getAccounts, addTransaction } from "../api";
+import { getAccounts } from "../api";
 
 function BudgetManagement() {
   const [account, setAccount] = useState(null);
@@ -17,28 +16,6 @@ function BudgetManagement() {
       .catch((error) => console.error(error));
   }, []);
 
-  const addExpense = async () => {
-    const category = prompt("Enter category name:");
-    const amount = parseFloat(prompt("Enter expense amount:"));
-
-    if (category && !isNaN(amount)) {
-      const transaction = {
-        date: new Date().toISOString(),
-        amount,
-        description: category,
-        type: "debit",
-        category,
-        mode: "UPI", // You could allow the user to choose the mode
-      };
-      try {
-        const updatedAccount = await addTransaction(account._id, transaction);
-        setAccount(updatedAccount);
-      } catch (error) {
-        console.error("Error adding expense:", error);
-      }
-    }
-  };
-
   if (!account) return <div>Loading...</div>;
 
   // Calculate total spent (sum of all debit transactions)
@@ -52,14 +29,8 @@ function BudgetManagement() {
     <>
       <Header />
       <div className="min-h-screen bg-gray-50 p-8">
-        <header className="flex justify-between mb-6">
+        <header className="mb-6">
           <h1 className="text-2xl font-semibold">Budget Management</h1>
-          <button
-            onClick={addExpense}
-            className="bg-blue-500 text-white px-4 py-2 rounded-lg flex items-center hover:bg-blue-600"
-          >
-            <FaPlus className="mr-2" /> Add Expense
-          </button>
         </header>
 
         {/* Budget Overview */}
