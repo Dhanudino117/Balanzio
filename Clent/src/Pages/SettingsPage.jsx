@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
 import { FaSun, FaMoon, FaBell, FaExclamationTriangle, FaSync, FaSignOutAlt } from 'react-icons/fa';
 import Header from '../Components/Header';
+import { Link } from 'react-router-dom';
 
 const SettingsPage = () => {
   const [darkMode, setDarkMode] = useState(false);
   const [pushNotifications, setPushNotifications] = useState(true);
   const [budgetAlerts, setBudgetAlerts] = useState(true);
 
-  // Toggle component
+
   const ToggleSwitch = ({ isChecked, onToggle }) => (
     <label className="relative inline-flex items-center cursor-pointer">
       <input
@@ -42,7 +43,7 @@ const SettingsPage = () => {
 
         <h2 className="text-lg font-semibold mb-4">Preferences</h2>
 
-        {/* Appearance */}
+        
         <div className="flex items-center justify-between py-4 border-b">
           <div>
             <div className="flex items-center mb-1">
@@ -67,7 +68,7 @@ const SettingsPage = () => {
           </div>
         </div>
 
-        {/* Push Notifications */}
+        
         <div className="flex items-center justify-between py-4 border-b">
           <div>
             <div className="flex items-center mb-1">
@@ -82,7 +83,7 @@ const SettingsPage = () => {
           />
         </div>
 
-        {/* Budget Alerts */}
+        
         <div className="flex items-center justify-between py-4 border-b">
           <div>
             <div className="flex items-center mb-1">
@@ -97,7 +98,7 @@ const SettingsPage = () => {
           />
         </div>
 
-        {/* Device Sync */}
+       
         <div className="flex items-center justify-between py-4 border-b">
           <div>
             <div className="flex items-center mb-1">
@@ -109,12 +110,13 @@ const SettingsPage = () => {
           <button className="text-blue-500">Manage Devices</button>
         </div>
 
-        {/* Log Out */}
+        <Link to='/auth-page'>
         <button className="w-full bg-white text-red-500 py-2 rounded-lg flex items-center justify-center border-2 border-red-500 hover:bg-red-50 mt-6">
           <FaSignOutAlt className="mr-2" /> Log Out
         </button>
+        </Link>
 
-        {/* Footer */}
+      
         <p className="text-center text-gray-400 text-sm mt-6">
           Budget Buddy v1.0.0
           <br />© 2023 Budget Buddy. All rights reserved.

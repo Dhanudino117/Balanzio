@@ -132,14 +132,12 @@ const Expenditure = () => {
   const [pieChartData, setPieChartData] = useState([]);
 
   useEffect(() => {
-    // Fetch the account (using the first account for example)
     getAccounts()
       .then((accounts) => {
         if (accounts.length) {
           const acc = accounts[0];
           setAccount(acc);
 
-          // Aggregate debit transactions by date for the area chart
           const aggregated = {};
           acc.transactions.forEach((tx) => {
             if (tx.type === "debit") {
@@ -150,23 +148,26 @@ const Expenditure = () => {
               aggregated[dateKey] = (aggregated[dateKey] || 0) + tx.amount;
             }
           });
-          const areaData = Object.entries(aggregated).map(([date, expenditure]) => ({
-            date,
-            expenditure,
-          }));
+          const areaData = Object.entries(aggregated).map(
+            ([date, expenditure]) => ({
+              date,
+              expenditure,
+            })
+          );
           setAreaChartData(areaData);
 
-          // Aggregate expenditure by mode (only UPI and Bank Transfer)
           const modeTotals = { UPI: 0, "Bank Transfer": 0 };
           acc.transactions.forEach((tx) => {
-            if (tx.type === "debit" && (tx.mode === "UPI" || tx.mode === "Bank Transfer")) {
+            if (
+              tx.type === "debit" &&
+              (tx.mode === "UPI" || tx.mode === "Bank Transfer")
+            ) {
               modeTotals[tx.mode] += tx.amount;
             }
           });
-          // Calculate the total expenditure for these two modes
+
           const totalExpenditure = modeTotals.UPI + modeTotals["Bank Transfer"];
 
-          // Convert values into percentages so the pie chart sums to 100
           const pieData = Object.entries(modeTotals).map(([name, value]) => ({
             name,
             value: totalExpenditure ? (value / totalExpenditure) * 100 : 0,
@@ -182,11 +183,14 @@ const Expenditure = () => {
     <div className="min-h-screen bg-gray-50">
       <Header />
       <div className="p-4 md:p-6">
-        <h1 className="text-xl md:text-2xl font-semibold mb-4">Expenditure Analysis</h1>
+        <h1 className="text-xl md:text-2xl font-semibold mb-4">
+          Expenditure Analysis
+        </h1>
 
-        {/* Area Chart Section */}
         <div className="bg-white p-4 md:p-6 rounded-xl shadow-md mb-6">
-          <h2 className="text-gray-600 mb-4 text-lg md:text-xl">Monthly Expenditure Trend</h2>
+          <h2 className="text-gray-600 mb-4 text-lg md:text-xl">
+            Monthly Expenditure Trend
+          </h2>
           <div className="w-full h-72 md:h-96">
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart data={areaChartData}>
@@ -195,7 +199,13 @@ const Expenditure = () => {
                 <YAxis />
                 <Tooltip />
                 <defs>
-                  <linearGradient id="colorExpenditure" x1="0" y1="0" x2="0" y2="1">
+                  <linearGradient
+                    id="colorExpenditure"
+                    x1="0"
+                    y1="0"
+                    x2="0"
+                    y2="1"
+                  >
                     <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.8} />
                     <stop offset="95%" stopColor="#3b82f6" stopOpacity={0} />
                   </linearGradient>
@@ -211,9 +221,10 @@ const Expenditure = () => {
           </div>
         </div>
 
-        {/* Pie Chart Section */}
         <div className="bg-white p-4 md:p-6 rounded-xl shadow-md">
-          <h2 className="text-gray-600 mb-4 text-lg md:text-xl">Expenditure by Mode</h2>
+          <h2 className="text-gray-600 mb-4 text-lg md:text-xl">
+            Expenditure by Mode
+          </h2>
           <div className="w-full h-72">
             <ResponsiveContainer>
               <PieChart>
@@ -230,7 +241,11 @@ const Expenditure = () => {
                     <Cell key={`cell-${index}`} fill={entry.color} />
                   ))}
                 </Pie>
-                <Legend layout="horizontal" verticalAlign="bottom" align="center" />
+                <Legend
+                  layout="horizontal"
+                  verticalAlign="bottom"
+                  align="center"
+                />
               </PieChart>
             </ResponsiveContainer>
           </div>

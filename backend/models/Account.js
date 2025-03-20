@@ -20,7 +20,7 @@ const accountSchema = new mongoose.Schema({
   transactions: [transactionSchema],
   status: { type: String, default: "active" },
   lastUpdated: { type: Date, default: Date.now },
-  password: { type: String, required: true }, // In production, hash your passwords!
+  password: { type: String, required: true }, 
 });
 
 module.exports = mongoose.model("Account", accountSchema);
