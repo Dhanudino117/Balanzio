@@ -1,75 +1,39 @@
-import React, { useState } from "react";
+// src/pages/TransactionsPage.jsx
+import React, { useEffect, useState } from "react";
 import { IoSearch } from "react-icons/io5";
 import { BiTransfer } from "react-icons/bi";
 import { FaRegCreditCard } from "react-icons/fa";
 import Header from "../Components/Header";
-
-const transactions = [
-  {
-    name: "Vikranth S",
-    type: "UPI",
-    amount: -120,
-    date: "5/1/2025",
-    icon: <FaRegCreditCard className="text-blue-500" />,
-  },
-  {
-    name: "Dhanush",
-    type: "UPI",
-    amount: -745,
-    date: "5/2/2025",
-    icon: <FaRegCreditCard className="text-blue-500" />,
-  },
-  {
-    name: "Santhosh R",
-    type: "ATM",
-    amount: -500,
-    date: "5/2/2025",
-    icon: <FaRegCreditCard className="text-blue-500" />,
-  },
-  {
-    name: "Jobin J",
-    type: "Bank Transfer",
-    amount: 3500,
-    date: "5/3/2025",
-    icon: <BiTransfer className="text-green-500" />,
-  },
-  {
-    name: "Sathvika",
-    type: "Card",
-    amount: -250,
-    date: "5/4/2025",
-    icon: <FaRegCreditCard className="text-yellow-500" />,
-  },
-  {
-    name: "Gautham Ram",
-    type: "UPI",
-    amount: -100,
-    date: "5/5/2025",
-    icon: <FaRegCreditCard className="text-blue-500" />,
-  },
-  {
-    name: "Sachu D",
-    type: "Bank Transfer",
-    amount: +1200,
-    date: "5/5/2025",
-    icon: <BiTransfer className="text-green-500" />,
-  },
-];
+import { getAccounts } from "../api";
 
 const TransactionsPage = () => {
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState("Overall");
+  const [transactions, setTransactions] = useState([]);
+
+  useEffect(() => {
+    // Fetch accounts and use the transactions from the first account
+    getAccounts()
+      .then((accounts) => {
+        if (accounts.length) {
+          setTransactions(accounts[0].transactions);
+        }
+      })
+      .catch((error) => console.error(error));
+  }, []);
 
   const filteredTransactions = transactions.filter((t) => {
     if (filter === "Overall")
-      return t.name.toLowerCase().includes(search.toLowerCase());
+      return t.description.toLowerCase().includes(search.toLowerCase());
     if (filter === "UPI")
       return (
-        t.type === "UPI" && t.name.toLowerCase().includes(search.toLowerCase())
+        t.mode === "UPI" &&
+        t.description.toLowerCase().includes(search.toLowerCase())
       );
     if (filter === "Direct")
       return (
-        t.type === "Card" && t.name.toLowerCase().includes(search.toLowerCase())
+        t.mode === "Bank Transfer" &&
+        t.description.toLowerCase().includes(search.toLowerCase())
       );
     return false;
   });
@@ -109,28 +73,33 @@ const TransactionsPage = () => {
         ))}
       </div>
 
-        <div className="bg-white p-6 rounded-xl shadow-lg mx-4">
+      <div className="bg-white p-6 rounded-xl shadow-lg mx-4">
         {filteredTransactions.length > 0 ? (
           filteredTransactions.map((t, index) => (
-            <div
-              key={index}
-              className="flex justify-between items-center py-4 "
-            >
+            <div key={index} className="flex justify-between items-center py-4 ">
               <div className="flex items-center gap-4">
-                <div className="bg-gray-100 p-4 rounded-full">{t.icon}</div>
+                <div className="bg-gray-100 p-4 rounded-full">
+                  {t.mode === "Bank Transfer" ? (
+                    <BiTransfer className="text-green-500" />
+                  ) : (
+                    <FaRegCreditCard className="text-blue-500" />
+                  )}
+                </div>
                 <div>
-                  <h4 className="font-semibold text-gray-800">{t.name}</h4>
+                  <h4 className="font-semibold text-gray-800">
+                    {t.description}
+                  </h4>
                   <p className="text-gray-500 text-sm">
-                    {t.date} - {t.type}
+                    {new Date(t.date).toLocaleDateString()} - {t.mode}
                   </p>
                 </div>
               </div>
               <p
                 className={`text-lg font-semibold ${
-                  t.amount < 0 ? "text-red-500" : "text-green-500"
+                  t.type === "debit" ? "text-red-500" : "text-green-500"
                 }`}
               >
-                {t.amount < 0 ? `-₹${Math.abs(t.amount)}` : `+₹${t.amount}`}
+                {t.type === "debit" ? `-₹${t.amount}` : `+₹${t.amount}`}
               </p>
             </div>
           ))

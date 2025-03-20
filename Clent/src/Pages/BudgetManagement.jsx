@@ -1,47 +1,56 @@
-import React, { useState } from "react";
+// src/pages/BudgetManagement.jsx
+import React, { useEffect, useState } from "react";
 import { FaPlus } from "react-icons/fa";
 import Header from "../Components/Header";
+import { getAccounts, addTransaction } from "../api";
 
 function BudgetManagement() {
-  const [data, setData] = useState([
-    { category: "Total Budget", amount: 8500, limit: 11500 },
-    { category: "Food", amount: 3200, limit: 5000 },
-    { category: "Transportation", amount: 1500, limit: 2000 },
-    { category: "Entertainment", amount: 1000, limit: 1500 },
-    { category: "Shopping", amount: 2800, limit: 3000 },
-  ]);
+  const [account, setAccount] = useState(null);
 
-  const addExpense = () => {
+  useEffect(() => {
+    getAccounts()
+      .then((accounts) => {
+        if (accounts.length) {
+          setAccount(accounts[0]);
+        }
+      })
+      .catch((error) => console.error(error));
+  }, []);
+
+  const addExpense = async () => {
     const category = prompt("Enter category name:");
+    const amount = parseFloat(prompt("Enter expense amount:"));
 
-    const limit = parseFloat(prompt("Enter budget limit:"));
-    const amount = parseFloat(prompt("Enter amount:"));
-
-    if (category && !isNaN(amount) && !isNaN(limit)) {
-      setData([...data, { category, amount, limit }]);
+    if (category && !isNaN(amount)) {
+      const transaction = {
+        date: new Date().toISOString(),
+        amount,
+        description: category,
+        type: "debit",
+        category,
+        mode: "UPI", // You could allow the user to choose the mode
+      };
+      try {
+        const updatedAccount = await addTransaction(account._id, transaction);
+        setAccount(updatedAccount);
+      } catch (error) {
+        console.error("Error adding expense:", error);
+      }
     }
   };
 
-  const getAlertMessage = (amount, limit) => {
-    const percentage = (amount / limit) * 100;
-    if (percentage >= 50 && percentage < 90) {
-      return {
-        message: "You came half of your budget limit!",
-        color: "bg-blue-50 border-l-4 border-blue-400 text-blue-700",
-      };
-    } else if (percentage >= 90) {
-      return {
-        message:
-          "⚠️ You're nearing your budget limit! Consider adjusting your spending.",
-        color: "bg-yellow-50 border-l-4 border-yellow-400 text-yellow-700",
-      };
-    }
-    return null;
-  };
+  if (!account) return <div>Loading...</div>;
+
+  // Calculate total spent (sum of all debit transactions)
+  const totalSpent = account.transactions
+    .filter((tx) => tx.type === "debit")
+    .reduce((sum, tx) => sum + tx.amount, 0);
+
+  const budgetProgress = Math.min((totalSpent / account.monthlyBudget) * 100, 100);
 
   return (
     <>
-    <Header/>
+      <Header />
       <div className="min-h-screen bg-gray-50 p-8">
         <header className="flex justify-between mb-6">
           <h1 className="text-2xl font-semibold">Budget Management</h1>
@@ -53,38 +62,47 @@ function BudgetManagement() {
           </button>
         </header>
 
-        {data.map((item, index) => {
-          const percentage = Math.min((item.amount / item.limit) * 100, 100);
-          const color = percentage > 90 ? "bg-orange-500" : "bg-green-500";
-          const alert = getAlertMessage(item.amount, item.limit);
+        {/* Budget Overview */}
+        <div className="mb-6 bg-white p-4 rounded-lg shadow-md">
+          <div className="flex justify-between mb-2">
+            <span className="text-lg font-semibold">Monthly Budget</span>
+            <span className="text-gray-600">₹{account.monthlyBudget}</span>
+          </div>
+          <div className="w-full bg-gray-200 rounded-full h-4 overflow-hidden">
+            <div
+              className={`h-4 ${budgetProgress > 90 ? "bg-orange-500" : "bg-green-500"}`}
+              style={{ width: `${budgetProgress}%` }}
+            ></div>
+          </div>
+          <span className="text-sm text-gray-500 mt-2 block">
+            {budgetProgress.toFixed(0)}% spent (₹{totalSpent} spent)
+          </span>
+        </div>
 
-          return (
-            <div key={index}>
-              {alert && (
-                <div className={`${alert.color} p-4 rounded-lg mb-4`}>
-                  {alert.message}
+        {/* Expense List */}
+        <div className="bg-white p-4 rounded-lg shadow-md">
+          <h2 className="text-xl font-semibold mb-4">Expenses</h2>
+          {account.transactions.filter(tx => tx.type === "debit").length > 0 ? (
+            account.transactions
+              .filter((tx) => tx.type === "debit")
+              .map((tx, index) => (
+                <div
+                  key={index}
+                  className="flex justify-between items-center py-3 border-b border-gray-100"
+                >
+                  <div>
+                    <h4 className="font-semibold text-gray-800">{tx.description}</h4>
+                    <p className="text-gray-500 text-sm">
+                      {new Date(tx.date).toLocaleDateString()}
+                    </p>
+                  </div>
+                  <p className="text-lg font-semibold text-red-500">-₹{tx.amount}</p>
                 </div>
-              )}
-              <div className="mb-4 bg-white p-4 rounded-lg shadow-md">
-                <div className="flex justify-between mb-2">
-                  <span className="text-lg font-semibold">{item.category}</span>
-                  <span className="text-gray-600">
-                    ₹{item.amount} / ₹{item.limit}
-                  </span>
-                </div>
-                <div className="w-full bg-gray-200 rounded-full h-4 overflow-hidden">
-                  <div
-                    className={`${color} h-4`}
-                    style={{ width: `${percentage}%` }}
-                  ></div>
-                </div>
-                <span className="text-sm text-gray-500 mt-2 block">
-                  {percentage.toFixed(0)}%
-                </span>
-              </div>
-            </div>
-          );
-        })}
+              ))
+          ) : (
+            <p className="text-center text-gray-500">No expenses recorded.</p>
+          )}
+        </div>
       </div>
     </>
   );
