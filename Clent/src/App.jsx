@@ -5,17 +5,20 @@ import BudgetManagement from './Pages/BudgetManagement'
 import SettingsPage from './Pages/SettingsPage'
 import TransactionPage from './Pages/TransactionPage'
 import Expenditure from './Pages/Expenditure'
+import AuthPage from './Pages/AuthPage'
 
 const App = () => {
   return (
     <BrowserRouter>
     <Routes>
+      <Route path='/auth-page' element={<AuthPage/>} />
       <Route path="/" element={<HomePage/>}   />
       <Route path='/user-budget' element={<BudgetManagement />} />
       <Route path='/user-settings' element={<SettingsPage/>}/>
       <Route path='/user-transactions' element={<TransactionPage/>}/>
       <Route path='/user-settings' element={<SettingsPage/>}/>
       <Route path='/user-expenditure'element={<Expenditure/>} />
+
       </Routes>
     </BrowserRouter>
   )
